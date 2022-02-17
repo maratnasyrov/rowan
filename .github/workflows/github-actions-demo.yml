@@ -6,13 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v1
     - name: Install node
       uses: actions/setup-node@v1
       with:
         node-version: 17
     - name: Install deps
-    - run: npm ci
-    - run: npm run type-check
-    - run: npm run lint
-    - run: npm run test
+    - run: |
+        npm ci
+        npm run type-check
+        npm run lint
+        npm run test
