@@ -10,9 +10,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 17
-    - name: Install, build, test
-      run: |
-        npm ci
-        npm run type-check
-        npm run lint
-        npm run test
+    - name: Install
+    - run: npm ci
+    - name: Test
+    - run: npm run type-check
+    - run: npm run lint
+    - run: npm run test
