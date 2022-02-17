@@ -2,6 +2,7 @@ name: GitHub Actions Demo
 on: [push]
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
@@ -11,8 +12,7 @@ jobs:
       with:
         node-version: 17
     - name: Install deps
-    - run: |
-        npm ci
-        npm run type-check
-        npm run lint
-        npm run test
+    - run: npm ci
+    - run: npm run type-check
+    - run: npm run lint
+    - run: npm run test
