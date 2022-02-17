@@ -1,0 +1,8 @@
+{
+  "*.{ts,tsx}": [
+    "eslint --ext ts,tsx ./ --max-warnings 0 --fix"
+  ],
+  "*.md": [
+    "markdownlint '**/*.md' --fix --ignore 'node_modules"
+  ]
+}

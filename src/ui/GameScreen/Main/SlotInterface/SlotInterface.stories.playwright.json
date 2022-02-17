@@ -1,0 +1,95 @@
+{
+  "version": "4",
+  "stories": {
+    "templates-slot--interface": {
+      "screenshots": [
+        {
+          "browserOptionsId": "portrait",
+          "browserType": "chromium",
+          "id": "portrait0",
+          "index": 0,
+          "title": "portrait-chromium"
+        },
+        {
+          "browserOptionsId": "portrait",
+          "browserType": "firefox",
+          "id": "portrait1",
+          "index": 1,
+          "title": "portrait-firefox"
+        },
+        {
+          "browserOptionsId": "portrait",
+          "browserType": "webkit",
+          "id": "portrait2",
+          "index": 2,
+          "title": "portrait-webkit"
+        },
+        {
+          "browserOptionsId": "landscape",
+          "browserType": "chromium",
+          "id": "landscape0",
+          "index": 3,
+          "title": "landscape-chromium"
+        },
+        {
+          "browserOptionsId": "landscape",
+          "browserType": "firefox",
+          "id": "landscape1",
+          "index": 4,
+          "title": "landscape-firefox"
+        },
+        {
+          "browserOptionsId": "landscape",
+          "browserType": "webkit",
+          "id": "landscape2",
+          "index": 5,
+          "title": "landscape-webkit"
+        },
+        {
+          "browserOptionsId": "desktop",
+          "browserType": "chromium",
+          "id": "desktop0",
+          "index": 6,
+          "title": "desktop-chromium"
+        },
+        {
+          "browserOptionsId": "desktop",
+          "browserType": "firefox",
+          "id": "desktop1",
+          "index": 7,
+          "title": "desktop-firefox"
+        },
+        {
+          "browserOptionsId": "desktop",
+          "browserType": "webkit",
+          "id": "desktop2",
+          "index": 8,
+          "title": "desktop-webkit"
+        }
+      ]
+    }
+  },
+  "browserOptions": {
+    "portrait": {
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "colorScheme": "dark"
+    },
+    "landscape": {
+      "viewport": {
+        "width": 812,
+        "height": 375
+      },
+      "colorScheme": "dark"
+    },
+    "desktop": {
+      "viewport": {
+        "width": 1024,
+        "height": 573
+      },
+      "colorScheme": "dark"
+    }
+  }
+}

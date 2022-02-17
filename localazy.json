@@ -1,0 +1,10 @@
+{
+  "upload": {
+    "type": "json",
+    "files": "locales/en/rowan.json"
+  },
+  "download": {
+    "files": "locales/${lang}/${file}",
+    "includeSourceLang": true
+  }
+}

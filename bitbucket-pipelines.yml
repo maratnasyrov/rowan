@@ -1,0 +1,125 @@
+image:
+  name: 971715240952.dkr.ecr.eu-central-1.amazonaws.com/rb-pipeline:latest
+  aws:
+    access-key: $PIPELINE_ECR_ACCESS_KEY
+    secret-key: $PIPELINE_ECR_SECRET_KEY
+clone:
+  lfs: true
+options:
+  docker:
+  size: 2x
+definitions:
+  services:
+    docker:
+      memory: 2048
+  steps:
+    - step: &testStep
+        name: Test
+        caches:
+          - node
+        script:
+          - npm ci
+          - npm run type-check
+          - npm run lint
+          - npm run test
+    - step: &Publish
+        name: Publish
+        caches:
+          - node
+        script:
+          - npm run aws:config
+          - npm ci
+          - npm publish
+    - step: &UploadLocales
+        name: Upload Locales to localazy
+        script:
+          - npm ci
+          - npm run i18next:upload
+    - step: &DownloadLocales
+        name: Download Locales from localazy
+        script:
+          - npm ci
+          - npm run i18next:download
+        artifacts:
+          - locales/**
+    - step: &PushLocales
+        name: Push Locales to CDN
+        deployment: test
+        script:
+          - aws configure set aws_access_key_id "${AWS_ACCESS_KEY_ID}"
+          - aws configure set aws_secret_access_key "${AWS_SECRET_ACCESS_KEY}"
+          - aws s3 sync locales s3://${S3_BUCKET}/locales --delete --cache-control max-age=31536000
+          - aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/locales*"
+    - step: &CheckLocales
+        name: Check Locales
+        script:
+          - echo "Check locales"
+    - step: &npmSnykStep
+        name: Snyk npm scan
+        artifacts:
+          - snyk-test-output.html
+        caches:
+          - node
+        script:
+          - /scripts/snyk.sh --npm
+pipelines:
+  pull-requests:
+    feature/*:
+      - step: *testStep
+    bugfix/*:
+      - step: *testStep
+    hotfix/*:
+      - step: *testStep
+    release/*:
+      - step: *testStep
+      - step: *npmSnykStep
+      - step: *CheckLocales
+  branches:
+    release:
+      - step: *testStep
+      - step: *npmSnykStep
+      - step: *UploadLocales
+  custom:
+    snyk:
+      - step:
+          <<: *npmSnykStep
+          script:
+          - /scripts/snyk.sh --npm --dontbreak
+    UploadLocales:
+      - step: *UploadLocales
+    PushLocales:
+      - step: *DownloadLocales
+      - parallel:
+        - step:
+            <<: *PushLocales
+            name: Push Locales to test
+            trigger: manual
+        - step:
+            <<: *PushLocales
+            name: Push Locales to stage
+            deployment: stage
+            trigger: manual
+        - step:
+            <<: *PushLocales
+            name: Push Locales to prod
+            deployment: prod
+            trigger: manual
+  tags:
+    v*[0-9].*[0-9].*[0-9]-beta.*[0-9]:
+      - step: *testStep
+      - step: *Publish
+      - step: *DownloadLocales
+      - step: *PushLocales
+    v*[0-9].*[0-9].*[0-9]:
+      - step: *testStep
+      - step: *Publish
+      - step: *DownloadLocales
+      - step:
+          <<: *PushLocales
+          name: Push Locales to stage
+          deployment: stage
+      - step:
+          <<: *PushLocales
+          name: Push Locales to prod
+          deployment: prod
+          trigger: manual
